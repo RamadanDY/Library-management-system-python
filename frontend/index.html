@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library Management System</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/babel-standalone@6.26.0/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100">
+    <div id="root" class="container mx-auto p-4"></div>
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      const App = () => {
+        const [books, setBooks] = useState([]);
+        const [users, setUsers] = useState([]);
+        const [transactions, setTransactions] = useState([]);
+        const [newBook, setNewBook] = useState({
+          book_id: "",
+          title: "",
+          author: "",
+          total_copies: "",
+        });
+        const [newUser, setNewUser] = useState({ user_id: "", name: "" });
+        const [borrow, setBorrow] = useState({ user_id: "", book_id: "" });
+        const [returnBook, setReturnBook] = useState({
+          user_id: "",
+          book_id: "",
+        });
+
+        const fetchBooks = async () => {
+          const response = await fetch("http://localhost:5000/books");
+          const data = await response.json();
+          setBooks(data);
+        };
+
+        const fetchUsers = async () => {
+          const response = await fetch("http://localhost:5000/users");
+          const data = await response.json();
+          setUsers(data);
+        };
+
+        const fetchTransactions = async () => {
+          const response = await fetch("http://localhost:5000/transactions");
+          const data = await response.json();
+          setTransactions(data);
+        };
+
+        useEffect(() => {
+          fetchBooks();
+          fetchUsers();
+          fetchTransactions();
+        }, []);
+
+        const handleAddBook = async (e) => {
+          e.preventDefault();
+          const response = await fetch("http://localhost:5000/books", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              book_id: parseInt(newBook.book_id),
+              title: newBook.title,
+              author: newBook.author,
+              total_copies: parseInt(newBook.total_copies),
+            }),
+          });
+          if (response.ok) {
+            fetchBooks();
+            setNewBook({
+              book_id: "",
+              title: "",
+              author: "",
+              total_copies: "",
+            });
+          }
+        };
+
+        const handleRegisterUser = async (e) => {
+          e.preventDefault();
+          const response = await fetch("http://localhost:5000/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              user_id: parseInt(newUser.user_id),
+              name: newUser.name,
+            }),
+          });
+          if (response.ok) {
+            fetchUsers();
+            setNewUser({ user_id: "", name: "" });
+          }
+        };
+
+        const handleBorrow = async (e) => {
+          e.preventDefault();
+          const response = await fetch("http://localhost:5000/borrow", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              user_id: parseInt(borrow.user_id),
+              book_id: parseInt(borrow.book_id),
+            }),
+          });
+          if (response.ok) {
+            fetchBooks();
+            fetchTransactions();
+            setBorrow({ user_id: "", book_id: "" });
+          }
+        };
+
+        const handleReturn = async (e) => {
+          e.preventDefault();
+          const response = await fetch("http://localhost:5000/return", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              user_id: parseInt(returnBook.user_id),
+              book_id: parseInt(returnBook.book_id),
+            }),
+          });
+          if (response.ok) {
+            fetchBooks();
+            fetchTransactions();
+            setReturnBook({ user_id: "", book_id: "" });
+          }
+        };
+
+        return (
+          <div className="space-y-8">
+            <h1 className="text-3xl font-bold text-center">
+              Library Management System
+            </h1>
+
+            {/* Add Book Form */}
+            <div className="bg-white p-6 rounded shadow">
+              <h2 className="text-xl font-semibold mb-4">Add Book</h2>
+              <form onSubmit={handleAddBook} className="space-y-4">
+                <input
+                  type="number"
+                  placeholder="Book ID"
+                  value={newBook.book_id}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, book_id: e.target.value })
+                  }
+                  className="w-full p-2 border rounded"
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Title"
+                  value={newBook.title}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, title: e.target.value })
+                  }
+                  className="w-full p-2 border rounded"
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Author"
+                  value={newBook.author}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, author: e.target.value })
+                  }
+                  className="w-full p-2 border rounded"
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Total Copies"
+                  value={newBook.total_copies}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, total_copies: e.target.value })
+                  }
+                  className="w-full p-2 border rounded"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                >
+                  Add Book
+                </button>
+              </form>
+            </div>
+
+            {/* Register User Form */}
+            <div className="bg-white p-6 rounded shadow">
+              <h2 className="text-xl font-semibold mb-4">Register User</h2>
+              <form onSubmit={handleRegisterUser} className="space-y-4">
+                <input
+                  type="number"
+                  placeholder="User ID"
+                  value={newUser.user_id}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, user_id: e.target.value })
+                  }
+                  className="w-full p-2 border rounded"
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={newUser.name}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, name: e.target.value })
+                  }
+                  className="w-full p-2 border rounded"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                >
+                  Register User
+                </button>
+              </form>
+            </div>
+
+            {/* Borrow Book Form */}
+            <div className="bg-white p-6 rounded shadow">
+              <h2 className="text-xl font-semibold mb-4">Borrow Book</h2>
+              <form onSubmit={handleBorrow} className="space-y-4">
+                <input
+                  type="number"
+                  placeholder="User ID"
+                  value={borrow.user_id}
+                  onChange={(e) =>
+                    setBorrow({ ...borrow, user_id: e.target.value })
+                  }
+                  className="w-full p-2 border rounded"
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Book ID"
+                  value={borrow.book_id}
+                  onChange={(e) =>
+                    setBorrow({ ...borrow, book_id: e.target.value })
+                  }
+                  className="w-full p-2 border rounded"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
+                >
+                  Borrow Book
+                </button>
+              </form>
+            </div>
+
+            {/* Return Book Form */}
+            <div className="bg-white p-6 rounded shadow">
+              <h2 className="text-xl font-semibold mb-4">Return Book</h2>
+              <form onSubmit={handleReturn} className="space-y-4">
+                <input
+                  type="number"
+                  placeholder="User ID"
+                  value={returnBook.user_id}
+                  onChange={(e) =>
+                    setReturnBook({ ...returnBook, user_id: e.target.value })
+                  }
+                  className="w-full p-2 border rounded"
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Book ID"
+                  value={returnBook.book_id}
+                  onChange={(e) =>
+                    setReturnBook({ ...returnBook, book_id: e.target.value })
+                  }
+                  className="w-full p-2 border rounded"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                >
+                  Return Book
+                </button>
+              </form>
+            </div>
+
+            {/* Books List */}
+            <div className="bg-white p-6 rounded shadow">
+              <h2 className="text-xl font-semibold mb-4">Books</h2>
+              {books.length === 0 ? (
+                <p>No books available.</p>
+              ) : (
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-gray-200">
+                      <th className="border p-2">Book ID</th>
+                      <th className="border p-2">Title</th>
+                      <th className="border p-2">Author</th>
+                      <th className="border p-2">Available/Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {books.map((book) => (
+                      <tr key={book.book_id}>
+                        <td className="border p-2">{book.book_id}</td>
+                        <td className="border p-2">{book.title}</td>
+                        <td className="border p-2">{book.author}</td>
+                        <td className="border p-2">
+                          {book.available_copies}/{book.total_copies}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            {/* Users List */}
+            <div className="bg-white p-6 rounded shadow">
+              <h2 className="text-xl font-semibold mb-4">Users</h2>
+              {users.length === 0 ? (
+                <p>No users registered.</p>
+              ) : (
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-gray-200">
+                      <th className="border p-2">User ID</th>
+                      <th className="border p-2">Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map((user) => (
+                      <tr key={user.user_id}>
+                        <td className="border p-2">{user.user_id}</td>
+                        <td className="border p-2">{user.name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            {/* Transactions List */}
+            <div className="bg-white p-6 rounded shadow">
+              <h2 className="text-xl font-semibold mb-4">Transactions</h2>
+              {transactions.length === 0 ? (
+                <p>No transactions recorded.</p>
+              ) : (
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-gray-200">
+                      <th className="border p-2">Transaction ID</th>
+                      <th className="border p-2">User ID</th>
+                      <th className="border p-2">Book ID</th>
+                      <th className="border p-2">Action</th>
+                      <th className="border p-2">Timestamp</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transactions.map((t) => (
+                      <tr key={t.transaction_id}>
+                        <td className="border p-2">{t.transaction_id}</td>
+                        <td className="border p-2">{t.user_id}</td>
+                        <td className="border p-2">{t.book_id}</td>
+                        <td className="border p-2">{t.action}</td>
+                        <td className="border p-2">{t.timestamp}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        );
+      };
+
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+  </body>
+</html>

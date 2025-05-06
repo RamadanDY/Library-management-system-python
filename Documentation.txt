@@ -1,3 +1,16 @@
+how to run the backemd
+cd frontendnd
+python3 -m http.server 8000
+
+
+
+
+
+
+
+
+
+
 Library Management System Documentation
 Overview
 The Library Management System (LMS) is a web-based application designed to manage library operations, including book inventory, user registration, and book borrowing/returning. The system provides a user-friendly interface for librarians to add books, register users, track transactions, and view library status. It consists of a backend built with Python, Flask, and SQLite, and a frontend built with React, React Router, and Tailwind CSS.

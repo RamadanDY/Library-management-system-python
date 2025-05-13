@@ -1,4 +1,4 @@
-from library import Library
+from library_manager import Library
 
 if __name__ == "__main__":
     library = Library()
@@ -7,11 +7,14 @@ if __name__ == "__main__":
     library.add_book(1, "The Great Gatsby", "F. Scott Fitzgerald", 5)
     library.add_book(2, "1984", "George Orwell", 3)
     library.add_book(3, "2000", "Devil May Cry", 10)
+    library.add_book(4, "2000", "Ramadan", 10)
 
     # Registering users
     library.register_user(101, "Alice Smith")
     library.register_user(102, "Bob Johnson")
     library.register_user(103, "Yakamota")
+    library.register_user(105, "Yakubu")
+
 
     # Display initial state
     library.display_books()

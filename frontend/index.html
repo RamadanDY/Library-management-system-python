@@ -32,19 +32,19 @@
         });
 
         const fetchBooks = async () => {
-          const response = await fetch("http://localhost:8000/books");
+          const response = await fetch("http://localhost:5000/books");
           const data = await response.json();
           setBooks(data);
         };
 
         const fetchUsers = async () => {
-          const response = await fetch("http://localhost:8000/users");
+          const response = await fetch("http://localhost:5000/users");
           const data = await response.json();
           setUsers(data);
         };
 
         const fetchTransactions = async () => {
-          const response = await fetch("http://localhost:8000/transactions");
+          const response = await fetch("http://localhost:5000/transactions");
           const data = await response.json();
           setTransactions(data);
         };
@@ -57,7 +57,7 @@
 
         const handleAddBook = async (e) => {
           e.preventDefault();
-          const response = await fetch("http://localhost:8000/books", {
+          const response = await fetch("http://localhost:5000/books", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -80,7 +80,7 @@
 
         const handleRegisterUser = async (e) => {
           e.preventDefault();
-          const response = await fetch("http://localhost:8000/users", {
+          const response = await fetch("http://localhost:5000/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -96,7 +96,7 @@
 
         const handleBorrow = async (e) => {
           e.preventDefault();
-          const response = await fetch("http://localhost:8000/borrow", {
+          const response = await fetch("http://localhost:5000/borrow", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -113,7 +113,7 @@
 
         const handleReturn = async (e) => {
           e.preventDefault();
-          const response = await fetch("http://localhost:8000/return", {
+          const response = await fetch("http://localhost:5000/return", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

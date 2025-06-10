@@ -1,4 +1,5 @@
 from datetime import datetime
+# we are importin the datetime class from the datetime module 
 
 class TransactionManager:
     def __init__(self, conn, cursor):

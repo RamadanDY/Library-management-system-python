@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 from library_manager import Library
 import sqlite3
+# this is also a module that is used to import the mysql db module 
 from db_setup import DatabaseSetup
 
 app = Flask(__name__)
